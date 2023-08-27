@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SocialNews.Data;
 using SocialNews.Models;
 using SocialNews.Models.ViewModels;
 using System.Diagnostics;
@@ -7,16 +11,6 @@ namespace SocialNews.Controllers
 {
 	public class HomeController : Controller
 	{
-		public HomeController()
-		{
-
-		}
-
-		public IActionResult Index()
-		{
-			return View();
-		}
-
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{

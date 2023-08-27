@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model Comment
+@{
+    var thisUser = await UserManager.GetUserAsync(User);
+}
+
+<div class="d-flex mb-2 border rounded p-1 bg-body-tertiary">
+    @if (Model.UsersUpvoting.Contains(thisUser))
+    {
+        <form asp-controller="Comments" asp-action="RemoveUpvote" method="post"
+              class="d-flex flex-column ms-1 me-2 justify-content-center align-items-center fs-6 commentRemoveUpvote">
+            <input type="hidden" name="id" value="@Model.ID">
+            <button type="submit" class="btn btn-sm btn-success">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            <div>@Model.Upvotes</div>
+        </form>
+    }
+    else
+    {
+        <form asp-controller="Comments" asp-action="Upvote" method="post"
+              class="d-flex flex-column ms-1 me-2 justify-content-center align-items-center fs-6 commentUpvote">
+            <input type="hidden" name="id" value="@Model.ID">
+            <button type="submit" class="btn btn-sm btn-outline-success">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+            <div>@Model.Upvotes</div>
+        </form>
+    }
+
+    <div class="flex-grow-1">
+        <div class="post-subtext text-secondary-emphasis">
+            <a asp-controller="Users" asp-action="Index" asp-route-username="@Model.Author.UserName">@Model.Author.UserName</a> 
+            on @Model.DateCreated
+        </div>
+        <div>@Model.Content</div>
+        @if (Model.Author == thisUser)
+        {
+            <form asp-controller="Comments" asp-action="Edit" method="post" hidden class="commentEditForm">
+                <input type="hidden" name="id" value="@Model.ID">
+                <textarea rows="3" name="content" class="form-control mb-1" required>@Model.Content</textarea>
+                <button type="reset" class="btn btn-sm btn-danger">Cancel</button>
+                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+            </form>
+        }
+
+        <div class="d-flex justify-content-end">
+            @if (Model.Author == thisUser)
+            {
+                <button class="btn btn-sm btn-warning me-1 commentEditBtn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Edit
+                </button>
+
+                <form asp-controller="Comments" asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@Model.ID">
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="fa-solid fa-trash"></i>
+                        Delete
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

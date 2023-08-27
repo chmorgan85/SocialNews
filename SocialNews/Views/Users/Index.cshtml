@@ -1,0 +1,75 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@model UsersViewModel
+@{
+	var thisUser = await UserManager.GetUserAsync(User);
+	ViewData["Title"] = thisUser.UserName + " - SocialNews";
+}
+
+<ul class="nav nav-pills mb-2">
+	<li class="nav-item">
+		<a id="userPostsNav" class="nav-link" asp-controller="Users" asp-action="Index" asp-route-username="@Model.UserName" asp-route-view="posts">
+			<i class="fa-solid fa-newspaper"></i>
+			Posts
+		</a>
+	</li>
+	<li class="nav-item">
+		<a id="userCommentsNav" class="nav-link" asp-controller="Users" asp-action="Index" asp-route-username="@Model.UserName" asp-route-view="comments">
+			<i class="fa-solid fa-comments"></i>
+			Comments
+		</a>
+	</li>
+	@if (SignInManager.IsSignedIn(User))
+	{
+		if (thisUser.UserName == Model.UserName)
+		{
+			<li class="nav-item">
+				<a id="userSavedNav" class="nav-link" asp-controller="Users" asp-action="Index" asp-route-username="@Model.UserName" asp-route-view="saved">
+					<i class="fa-solid fa-bookmark"></i>
+					Saved
+				</a>
+			</li>
+		}
+	}
+	
+</ul>
+
+@if (Model.View == "posts" || Model.View == "saved")
+{
+	foreach (var post in Model.Posts)
+	{
+		<partial name="_PostPartial" model="post" />
+	}
+}
+else if (Model.View == "comments")
+{
+	foreach (var comment in Model.Comments)
+	{
+		<div class="bg-body-tertiary rounded p-2 mb-2">
+			<div class="mb-1">
+				<a asp-controller="Users" asp-action="Index" asp-route-username="@comment.Author.UserName">@comment.Author.UserName</a>
+				 commented on <a asp-controller="Comments" asp-action="Index" asp-route-id="@comment.Post.ID">@comment.Post.Title</a>
+			</div>
+			<partial name="_CommentPartial" model="comment" />
+		</div>
+	}
+}
+
+
+@section Scripts {
+	<script type="text/javascript">
+		const view = '@Model.View';
+		switch (view) {
+			case 'posts':
+				document.querySelector('#userPostsNav').classList.add('active');
+				break;
+			case 'comments':
+				document.querySelector('#userCommentsNav').classList.add('active');
+				break;
+			case 'saved':
+				document.querySelector('#userSavedNav').classList.add('active');
+				break;
+		}
+	</script>
+}

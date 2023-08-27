@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNews.Data;
 
@@ -11,9 +12,11 @@ using SocialNews.Data;
 namespace SocialNews.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230824225611_Updates")]
+    partial class Updates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,51 +24,6 @@ namespace SocialNews.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ApplicationUserComment", b =>
-                {
-                    b.Property<int>("UpvotedCommentsID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsersUpvotingId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UpvotedCommentsID", "UsersUpvotingId");
-
-                    b.HasIndex("UsersUpvotingId");
-
-                    b.ToTable("ApplicationUserComment");
-                });
-
-            modelBuilder.Entity("ApplicationUserPost", b =>
-                {
-                    b.Property<int>("UpvotedPostsID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsersUpvotingId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UpvotedPostsID", "UsersUpvotingId");
-
-                    b.HasIndex("UsersUpvotingId");
-
-                    b.ToTable("ApplicationUserPost");
-                });
-
-            modelBuilder.Entity("ApplicationUserPost1", b =>
-                {
-                    b.Property<int>("SavedPostsID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsersSavingId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("SavedPostsID", "UsersSavingId");
-
-                    b.HasIndex("UsersSavingId");
-
-                    b.ToTable("ApplicationUserPost1");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -287,7 +245,7 @@ namespace SocialNews.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PostID")
+                    b.Property<int>("PostID")
                         .HasColumnType("int");
 
                     b.Property<int>("Upvotes")
@@ -332,51 +290,6 @@ namespace SocialNews.Data.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("ApplicationUserComment", b =>
-                {
-                    b.HasOne("SocialNews.Models.Comment", null)
-                        .WithMany()
-                        .HasForeignKey("UpvotedCommentsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNews.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersUpvotingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ApplicationUserPost", b =>
-                {
-                    b.HasOne("SocialNews.Models.Post", null)
-                        .WithMany()
-                        .HasForeignKey("UpvotedPostsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNews.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersUpvotingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ApplicationUserPost1", b =>
-                {
-                    b.HasOne("SocialNews.Models.Post", null)
-                        .WithMany()
-                        .HasForeignKey("SavedPostsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNews.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersSavingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -438,7 +351,9 @@ namespace SocialNews.Data.Migrations
 
                     b.HasOne("SocialNews.Models.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostID");
+                        .HasForeignKey("PostID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
 

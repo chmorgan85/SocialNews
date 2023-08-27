@@ -1,0 +1,28 @@
+﻿@model PostsViewModel
+@{
+    ViewData["Title"] = "SocialNews";
+}
+
+
+@foreach (var post in Model.Posts)
+{
+    <partial name="_PostPartial" model="post" />
+}
+
+
+@section Scripts {
+    <script type="text/javascript">
+        const sort = '@Model.Sort';
+        switch (sort) {
+            case 'hot':
+                document.querySelector('#hotNav').classList.add('active');
+                break;
+            case 'new':
+                document.querySelector('#newNav').classList.add('active');
+                break;
+            case 'top':
+                document.querySelector('#topNav').classList.add('active');
+                break;
+        }
+    </script>
+}

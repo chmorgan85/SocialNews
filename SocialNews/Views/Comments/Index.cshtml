@@ -1,0 +1,63 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@model CommentsViewModel
+@{
+    ViewData["Title"] = "Comments - SocialNews";
+}
+
+<div class="bg-body-tertiary p-2 rounded">
+    <partial name="_PostPartial" model="Model.Post" />
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form asp-controller="Comments" asp-action="Comment" method="post">
+            <input name="postID" type="hidden" value="@Model.Post.ID" />
+            <textarea name="content" class="form-control mb-2" rows="3" placeholder="What are your thoughts?" required></textarea>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-comment"></i>
+                    Comment
+                </button>
+            </div>
+        </form>
+    }
+
+    <hr />
+
+    <ul class="nav nav-pills mb-2">
+        <li class="nav-item">
+            <a id="commentsSortTop" class="nav-link" asp-controller="Comments" asp-action="Index" 
+               asp-route-id="@Model.Post.ID" asp-route-sort="top">
+               <i class="fa-solid fa-arrow-up"></i>
+               Top
+           </a>
+        </li>
+        <li class="nav-item">
+            <a id="commentsSortNew" class="nav-link" asp-controller="Comments" asp-action="Index"
+               asp-route-id="@Model.Post.ID" asp-route-sort="new">
+               <i class="fa-solid fa-newspaper"></i>
+               New
+           </a>
+        </li>
+    </ul>
+
+    @foreach (var comment in Model.Post.Comments)
+    {
+        <partial name="_CommentPartial" model="comment" />
+    }
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        const sort = '@Model.Sort';
+        switch (sort) {
+            case 'top':
+                document.querySelector('#commentsSortTop').classList.add('active');
+                break;
+            case 'new':
+                document.querySelector('#commentsSortNew').classList.add('active');
+                break;
+        }
+    </script>
+}

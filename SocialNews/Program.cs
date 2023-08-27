@@ -36,9 +36,20 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+/*
+app.MapControllerRoute(
+	name: "home",
+	pattern: "{action=Index}/{id?}",
+	defaults: new { controller = "Home" });
+app.MapControllerRoute(
+    name: "comments",
+    pattern: "{controller}/{id?}",
+    defaults: new { controller = "Comments", action = "Index" });
+*/
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
+	pattern: "{controller=Posts}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();
